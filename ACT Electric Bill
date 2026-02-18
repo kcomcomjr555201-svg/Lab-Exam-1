@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ACT Electricity Bill</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: orange;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        h2 {
+            color: rgb(8, 4, 4);
+            text-align: center;
+            margin-top: 10px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 350px;
+            text-align: center; 
+        }
+       
+        .logo {
+            width: 80px; 
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left; 
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: darkgreen;
+            color: white;
+            border: none;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #006400;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 4px;
+            text-align: left;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            color: red;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="Electric bill logo.png" alt="Electricity Logo" class="logo">
+        
+        <h2>ACT Electricity Bill</h2>
+        
+        <div class="form-group">
+            <label>Consumer Name:</label>
+            <input type="text" id="consumerName" placeholder="Enter Name" required>
+        </div>
+        <div class="form-group">
+            <label>Previous Reading (kWh):</label>
+            <input type="number" id="prevReading" placeholder="0" required>
+        </div>
+        <div class="form-group">
+            <label>Current Reading (kWh):</label>
+            <input type="number" id="currReading" placeholder="0" required>
+        </div>
+        <div class="form-group">
+            <label>Customer Type:</label>
+            <select id="customerType">
+                <option value="residential">Residential (₱10/unit)</option>
+                <option value="commercial">Commercial (₱15/unit)</option>
+            </select>
+        </div>
+        <button onclick="calculateBill()">Calculate Bill</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculateBill() {
+            const name = document.getElementById('consumerName').value;
+            const prev = parseFloat(document.getElementById('prevReading').value);
+            const curr = parseFloat(document.getElementById('currReading').value);
+            const type = document.getElementById('customerType').value;
+            const resultDiv = document.getElementById('result');
+
+            if (isNaN(prev) || isNaN(curr) || name === "") {
+                resultDiv.innerHTML = "Please fill in all fields correctly.";
+                resultDiv.className = "error";
+                return;
+            }
+
+            if (curr < prev) {
+                resultDiv.innerHTML = "Current reading cannot be less than previous.";
+                resultDiv.className = "error";
+                return;
+            }
+
+            const unitsConsumed = curr - prev;
+            let rate = (type === 'residential') ? 10 : 15;
+            let totalAmount = unitsConsumed * rate;
+
+            resultDiv.innerHTML = `
+                <strong>Consumer:</strong> ${name}<br>
+                <strong>Units Used:</strong> ${unitsConsumed} kWh<br>
+                <strong>Rate:</strong> ₱${rate}/kWh<br>
+                <strong>Total Bill:</strong> ₱${totalAmount.toFixed(2)}
+            `;
+            resultDiv.className = "success";
+        }
+    </script>
+</body>
+</html>
